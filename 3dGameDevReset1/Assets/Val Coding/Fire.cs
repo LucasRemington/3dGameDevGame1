@@ -5,7 +5,7 @@ using UnityEngine;
 public class Fire : MonoBehaviour {
 
     public Rigidbody rb;
-    private float speed = 5.0f;
+    private float speed = 15.0f;
     public PlayerMovement pm;
     public GameObject player;
 

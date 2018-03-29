@@ -16,13 +16,13 @@ public class PlayerMovement : MonoBehaviour
     //private Animator animator;
     private float Haxis;
     private Vector3 moveV;
-
-
+	Animator anim;
+	private bool fireCooldown;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        //animator = GetComponent<Animator>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetButtonDown("Jump"))
             {
                 vertVelocity = jumpForce;
-                //animator.SetBool("jumping", true);
+                anim.SetBool("jumping", true);
                 Invoke("stopJumping", 0.1f);
             }
         }
@@ -43,6 +43,11 @@ public class PlayerMovement : MonoBehaviour
         }          
         Haxis = Input.GetAxis("Horizontal");
         moveV = new Vector3(0.0f, vertVelocity, Haxis);
+		if (moveV.z != 0) {
+			anim.SetBool ("walking", true);
+		} else {
+			anim.SetBool ("walking", false);
+		}
         controller.Move(moveV * speed);
         Vector3 movement = new Vector3(0.0f, 0.0f, Haxis);
         if (Haxis != 0) {
@@ -62,13 +67,25 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
-                Instantiate(fire, player.transform.position, shooting);
+            Instantiate(fire, player.transform.position, shooting);
+
+			if (fireCooldown == false) {
+				anim.SetTrigger ("fire");
+				fireCooldown = true;
+				StartCoroutine (FireCooldown());
+			}
+				
         }
     }
 
+	IEnumerator FireCooldown() {
+		yield return new WaitForSeconds(1.033f);
+		fireCooldown = false;
+	}
+
     void stopJumping()
     {
-        //animator.SetBool("jumping", false);
+        anim.SetBool("jumping", false);
     }
 
 }
